@@ -9,3 +9,11 @@ cmake-build-*/
 .vscode/
 node_modules/
 __pycache__/
+.vs/
+Debug/
+Release/
+x64/
+LAA_on/
+LAA_off/
+vendor/
+*.zip
