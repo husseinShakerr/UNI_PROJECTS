@@ -1,0 +1,48 @@
+from mininet.net import Mininet
+from mininet.node import OVSController
+from mininet.cli import CLI
+from mininet.log import setLogLevel
+from mininet.topo import Topo
+from mininet.node import RemoteController
+#Klass för labbens topologi
+class fourSwitchTopo(Topo):
+    #Funktion som bygger topologin
+    def build(self):
+        #Skapar lägger till switchar i topologin
+        print("Skapar switches")
+        switches=["s1", "s2", "s3", "s4"]
+        for sw in switches:
+            self.addSwitch(sw)
+        #Skapar hosts och lägger till dem i topon
+        print("Skapar hosts")
+        hosts = ["h1", "h2", "h3", "h4"]
+        for h in hosts:
+            self.addHost(h)
+        #Länkar switcharna med hosts
+        print("Länkar hosts och switches")
+        self.addLink(hosts[0], switches[0])
+        self.addLink(hosts[1], switches[3])
+        self.addLink(hosts[2], switches[1])
+        self.addLink(hosts[3], switches[2])
+
+        #Länkar switcharna
+        print("Länkar switcharna med varandra")
+        self.addLink(switches[0], switches[1]) #s1 <-> s2
+        self.addLink(switches[0], switches[3]) #s1 <-> s4
+        self.addLink(switches[2], switches[1]) #s3 <-> s2
+        self.addLink(switches[2], switches[3]) #s3 <-> s4
+
+def main():
+    setLogLevel('info')
+    net = Mininet(topo=fourSwitchTopo(), controller=lambda name: RemoteController(name, ip='127.0.0.1', port=6633), ipBase='10.0.9.0/24')
+    net.start()
+    #sätter Ips på hosts
+    net.get('h1').setIP('10.0.9.1/24')
+    net.get('h2').setIP('10.0.9.2/24')
+    net.get('h3').setIP('10.0.9.3/24')
+    net.get('h4').setIP('10.0.9.4/24')
+    CLI(net)
+    net.stop()
+
+if __name__ == '__main__':
+    main()

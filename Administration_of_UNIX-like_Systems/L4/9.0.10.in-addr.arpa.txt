@@ -1,0 +1,16 @@
+$TTL 3600
+$ORIGIN 9.0.10.in-addr.arpa.
+@ IN SOA ns1.mcduckcorp.duckburg.cali. admin.mcduckcorp.duckburg.cali. (
+			2025120904 ; Serial
+			3600	   ; Refresh
+			900	   ; Retry
+			604800	   ; Expire
+			86400 )    ; Minimum TTL
+@ IN NS ns1.
+@ IN NS ns2.
+ns1 IN A 10.0.9.4
+ns2 IN A 10.0.9.8
+
+;Reverse PTR-posts
+
+1	IN	PTR	mail.mcduckcorp.duckburg.cali.

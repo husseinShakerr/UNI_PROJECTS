@@ -1,0 +1,24 @@
+$TTL 30d
+$ORIGIN cali.
+;SOA RECORD
+@ IN SOA ns1.cali. hostmaster.cali. (
+	2025120900	; serial YYYYMMDDnn
+	86400		; refresh 24h
+	7200		; retry 2h
+	3600000		; expire ~41d
+	172800		; minimum 2d
+)
+; Namn server
+@ IN NS ns1.cali.
+ns1 IN A 10.0.9.2
+;subdomän för duckburg
+duckburg IN NS ns1.duckburg.cali.
+ns1.duckburg.cali. IN A 10.0.9.3
+;Mail server
+@	IN MX 10 mail.cali.
+mail	IN A 10.0.9.1
+;DNSSEC_nycklar
+$include "Kcali.+008+30712.key" ;KSK
+$include "Kcali.+008+41743.key" ;ZSK
+;chain of trust
+duckburg.cali IN DS 20491 8 2 467E4438D3644346A5C4852C86EFDA340DE4087553F933D272EA55BBAF018B2A

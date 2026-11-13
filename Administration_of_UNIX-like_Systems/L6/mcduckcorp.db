@@ -1,0 +1,28 @@
+$TTL 30d
+$ORIGIN mcduckcorp.duckburg.cali.
+;SOA RECORD
+@ IN SOA ns1. hostmaster.mcduckcorp.duckburg.cali. (
+	2025120901 ; serial
+	86400 ; refresh
+	7200 ; retry
+	3600000 ; expire
+	172800 ; minimum
+)
+;Name servers
+@ IN NS ns1.
+@ IN NS ns2.
+;GLUE
+ns1 IN A 10.0.9.4
+ns2 IN A 10.0.9.8
+@ IN A 10.0.9.1
+;Hosts - En A-record för host som pekar mot host mejlen
+mail IN A 10.0.9.1
+;MX
+@ IN MX 10 mail.mcduckcorp.duckburg.cali.
+@ IN TXT "v=spf1 ip4:10.0.9.1 -all"
+mail._domainkey IN TXT "v=DKIM1; h=sha256; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAln0l/UkFgOyV+g5QTjmRJcnr8MvtrSMVQbxp+pL/vCdCRW8Yd8VE4eUW9lecFVQaYXN0ZqbH+qiV0SjfU0L/f5YK7MzCVyB/b7mNL6yNhsX5x4DLD0DyskQp+vZOsfaIGR25XyTy+vKuq/6AeEYJZ2au2iLOOthxyzWAZLdVhaSNs6QnLTkqktwfyqrq3k+n7Jds9RfXydRz4DRFifFef17QtB9EomFYkYBm2JMDC0Td7vCY7Cmg/opdcoBkQZEzpNuRHiKD7UeMqeAxs6p8jWX/w/h0TEpR2nM/limGUtXUwYX36nWvtLoT4sOspwNGmnBGcLMbK2PCeOdQxLerQIDAQAB"
+;CNAME alias
+hual2302 IN CNAME mail.mcduckcorp.duckburg.cali.
+; DNSSEC-nycklar
+$include "Kmcduckcorp.duckburg.cali.+008+34006.key" ;KSK
+$include "Kmcduckcorp.duckburg.cali.+008+61855.key" ;ZSK

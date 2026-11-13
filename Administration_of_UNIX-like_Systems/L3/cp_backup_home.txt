@@ -1,0 +1,9 @@
+#!/bin/bash
+BACKUP="$HOME"
+DEST="/dump/home_backup"
+TIMESTAMP="$(date +'%d_%m_%Y_%H_%M_%S')"
+HOSTNAME=$(hostname -s)
+BACKUP_DIR="$DEST/${HOSTNAME}_${TIMESTAMP}_cp"
+mkdir -p "$BACKUP_DIR"
+cp -a "$BACKUP/." "$BACKUP_DIR/"
+echo "BACKUP KLAR: $DEST/$ARCHIVE_FILE"

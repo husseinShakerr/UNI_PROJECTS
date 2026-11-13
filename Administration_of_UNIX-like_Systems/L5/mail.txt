@@ -1,0 +1,3 @@
+mail._domainkey	IN	TXT	( "v=DKIM1; h=sha256; k=rsa; "
+	  "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAln0l/UkFgOyV+g5QTjmRJcnr8MvtrSMVQbxp7+pL/vCdCRW8Yd8VE4eUW9lecFVQaYXN0ZqbH+qiV0SjfU0L/f5YK7MzCVyB/b7mNL6yNhsX5x4DLD0DyskQp+vZOsfaIGR25XyTy+vKuq/6AeEYJZ2au2iLOOthxyzWAZLdVhaSNs6QnLTkqktwfyqrq3k+n7Jds9RfXydRz4"
+	  "DRFifFef17QtB9EomFYkYBm2JMDC0Td7vCY7Cmg/opdcoBkQZEzpNuRHiKD7UeMqeAxs6p8jWX/w/h0TEpR2nM/limGUtXUwYX36nWvtLoT4sOspwNGmnBGcLMbK2PCeOdQxLerQIDAQAB" )  ; ----- DKIM key mail for mcduckcorp.duckburg.cali

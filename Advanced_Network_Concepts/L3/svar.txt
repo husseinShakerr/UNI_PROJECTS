@@ -1,0 +1,9 @@
+To answer in your report For this task, answer the following questions in
+your report:
+• Write a short summary about how you installed Mininet and POX. Your
+text must include any issues you had, and how you solved them.
+
+
+pyenv version: 2.6.13
+
+Följde

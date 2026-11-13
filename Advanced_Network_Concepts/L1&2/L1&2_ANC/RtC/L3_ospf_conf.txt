@@ -1,0 +1,125 @@
+RTc#show running-cong
+                    ^
+% Invalid input detected at '^' marker.
+
+RTc#show running-config
+Building configuration...
+
+
+Current configuration : 1437 bytes
+!
+! Last configuration change at 16:52:38 UTC Sat Nov 1 2025
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname RTc
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+memory-size iomem 5
+!
+dot11 syslog
+ip source-route
+!
+!
+ip cef
+!
+!
+!
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+voice-card 0
+!
+crypto pki token default removal timeout 0
+!
+!
+!
+!
+license udi pid CISCO2811 sn FCZ143971Q4
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 20.17.28.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 20.17.29.1 255.255.255.192
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ bandwidth 128
+ ip address 20.17.29.173 255.255.255.252
+!
+interface Serial0/0/1
+ bandwidth 256
+ ip address 20.17.29.162 255.255.255.252
+ clock rate 2000000
+!
+router ospf 1
+ network 20.17.29.160 0.0.0.3 area 0
+ network 20.17.28.0 0.0.0.255 area 0
+ network 20.17.29.0 0.0.0.63 area 0
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+mgcp profile default
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input all
+!
+scheduler allocate 20000 1000
+end

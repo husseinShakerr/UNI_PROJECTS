@@ -1,0 +1,1 @@
+https://www.postfix.org/STANDARD_CONFIGURATION_README.html //Standard config

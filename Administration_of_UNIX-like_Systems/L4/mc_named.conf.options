@@ -1,0 +1,9 @@
+options {
+	directory "/var/cache/bind";
+	recursion no; //Gör det non-recursive.
+	listen-on { any;};
+	allow-query { any;};
+	dnssec-validation auto;
+	auth-nxdomain no;
+	listen-on-v6 { any;};
+};

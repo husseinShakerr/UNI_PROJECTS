@@ -1,0 +1,39 @@
+body{
+    background-image: url("../images/del3_bgi.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+#title{
+    background-color: black;
+    color: white;
+    text-align: center;
+    border: 2px solid red;
+    border-radius: 5px;
+    padding: 20px;
+
+}
+
+#del2_questions{
+    background-color: black;
+    border: 2px solid red;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+#questions{
+    color: white;
+    text-align: center;
+    padding: 20px;
+
+}
+#svar{
+    background-color: black;
+    border: 2px solid red;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+#mina_svar{
+    color: white;
+    text-align: center;
+    padding: 20px;
+}

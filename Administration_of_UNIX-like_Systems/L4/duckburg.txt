@@ -1,0 +1,26 @@
+$TTL 30d
+$ORIGIN duckburg.cali.
+; SOA RECORD
+@ IN SOA ns1.duckburg.cali. hostmaster.duckburg.cali. (
+	2025120901 ; serial
+	86400 ; refresh
+	7200 ; retry
+	3600000 ; expire
+	172800 ; minimum
+)
+;Namn server
+@ IN NS ns1.duckburg.cali.
+ns1.duckburg.cali. IN A 10.0.9.3
+;Subdomän för mcduckcorp
+mcduckcorp IN NS ns2.mcduckcorp.duckburg.cali.
+ns2.mcduckcorp.duckburg.cali. IN A 10.0.9.4
+;Mail server
+@	IN MX 10 mail.duckburg.cali.
+mail	IN A 10.0.9.1
+;DNSSEC-nycklar
+;KSK
+$include "Kduckburg.cali.+008+20491.key"
+;ZSK
+$include "Kduckburg.cali.+008+31333.key"
+;DNSSEC CHAIN OF TRUST
+mcduckcorp.duckburg.cali. IN DS 34006 8 2 F0A394E861BFF446AD386FBD426EC566DDD2F46C9954BEE5E99729862AADA8

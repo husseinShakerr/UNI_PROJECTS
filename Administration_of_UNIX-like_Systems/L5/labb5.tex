@@ -1,0 +1,215 @@
+\documentclass{report}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[backend=biber, style=ieee]{biblatex}
+\addbibresource{C:/Users/zhass/Desktop/Kurser/unix/references.bib}
+
+\title{Laboration 5 - E-post}
+\author{Hussein Alshaikhshaker}
+\date{8 december 2025}
+
+\begin{document}
+\maketitle
+\newpage
+
+\chapter*{Iptables}
+\setcounter{chapter}{1}
+\setcounter{section}{0}
+\setcounter{figure}{0}
+
+\section{Firewall rules}
+För att uppnå laborationens instruktioners mål så la jag mina iptables-regler i ett skript som alltid körs vid reboot,
+detta är då för att jag har lagt in \texttt{[@reboot <sökväg till skriptet>]} i rootens crontab.
+Efter detta steg rebootade jag systemet och resultatet redovisas i bilderna nedan.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{firewall_rules_script.png}
+    \caption{ip-tables regler som körs vid reboot}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{firewall_rules.png}
+    \caption{Nuvarande ip-tables regler efter reboot}
+\end{figure}
+\newpage
+
+\chapter*{MTA/MDA}
+\setcounter{chapter}{2}
+\setcounter{figure}{0}
+\setcounter{section}{0}
+\section{Installering och konfigurering av Postfix}
+Postfix laddades ned med kommandot [sudo apt install postfix].
+\newline
+Jag blev hänvisad till postfix konfigurations program, jag tryckte på internet site och såg att
+det redan hade fyllts i hasse(localhost) by default. Tryckte på "ok". Detta genererade en main.cf fil i /etc/postfix/.
+\newline
+Sedan gick jag in i filen men [nano] för att justera konfigurationsfilen för hand och tog hjälp av postfix egna dokumentation, detta då enligt
+labbinstruktioner.
+\newline\newline
+Efter konfigurationen lade jag till Maildir/{cur, new, tmp} i respektive hemkatalog för alla användare
+på denna enhet. Postfix skapar inte kataloger för vart e-post ska placeras. 
+
+\section{Syfte}
+Mail Transfer Agent(MTA) och Mail Delivery Agent(MDA) fungerar tillsammans som ett digitalt postsystem.
+En MTA ansvarar för att ta emot och vidarebefordra e-post mellan servrar, medan en MDA ansvarar för den slutliga leveransen till användarens mailbox. \cite{ULSAH}
+\newline\newline
+I moderna system är MTA och MDA separata program. Postfix fungerar primärt som en MTA, men kan även utföra enkel lokal leverans till användarens mailboxar.
+\newline\newline
+Exempel mot verkligheten: 
+\begin{itemize}
+    \item MTA kan jämföras med t.ex en postnordterminal, där den processerar, routar brev.
+    \item MDA kan jämföras med själva brevbäraren som kommer och lägger brevet i brevlådan.
+\end{itemize}
+Personliga önskemål, till exempel om jag inte vill ha reklamblad, sätter jag upp en "ingen reklam" lapp på min dörr, vilket kommer respekteras av brevbäraren (digitalt är det MDA som måste ta hänsyn till det).
+
+\section{Konfigurering}
+\textbf{NOTERA: Jag anpassade hela konfigurations filen efter laborationens instruktioner sedan körde jag testerna.}
+\newline\newline
+Konfigurationen baserades på Postfix egna standardkonfiguration, kurslitteraturboken. \cite{ULSAH}\cite{pf_std_conf}
+\newline
+Jag justerade endast de nödvändiga parametrarna för att kunna skicka e-mails lokalt. Nedan nämner jag de parametrarna som justerades:
+\begin{description}
+    \item[myorigin = \$mydomain] \hfill \\
+    Bestämmer vilken domän som läggs till avsändaren när en lokal användare skickar mail utan full adress.
+    \item[inet\_interfaces = loopback-only] \hfill \\
+    Detta gör att postfix lyssnar endast på loopback-adressen \(127.0.0.1\). Alltså endast program på min maskin kan ansluta till SMTP.
+    \item[mynetworks = 127.0.0.0/8] \hfill \\
+    Detta följde med i den postfix-genererade filen, jag ändrar den inte eftersom den innehåller betrodda nätverk.
+    \item[home\_mailbox = Maildir/] \hfill \\
+    Denna rad lade jag till. Här aktiveras Maildir-leverans. Enligt Unix and Linux System Administration Handbook, kapitel 18.1, Mail system architecture, under rubrik Message stores, beskrivs 
+    att Maildir används mycket fortfarande och att Maildir placerar varje mejl i en separat fil. Nu är jag ingen internet services provider så detta val är lämpligt för lokal användar-mejl-box.
+    I kapitel 18.10, tabell 18.20, beskrivs också vad denna parameter gör. \cite{ULSAH}
+    \item[smtpd\_relay\_restrictions] \hfill \\
+    Denna parameter används för att styra vilka klienter som tillåts använda servern för att skicka vidare e-post
+    till andra domäner. Med andra ord är detta en mellanhandstjänst (annan server, till exempel Google) som Postfix
+    skickar e-mail till, och som i sin tur ansvarar för leverans till slutmottagaren.
+    I denna konfiguration tillåts trafik från det lokala nätverket (\texttt{permit\_mynetworks}) samt från
+    autentiserade användare (\texttt{permit\_sasl\_authenticated}). För alla andra anslutningar skjuts reläförsök upp
+    (\texttt{defer\_unauth\_destination}), vilket förhindrar att servern fungerar som en öppen reläserver. \cite{relay_restrictions}
+    \item[smtp\_recipient\_restrictions] \hfill \\
+    Denna parameter är den viktigaste. Jag satte värden för den utifrån boken. Parametern används för att styra vilka mottagare som accepteras av SMTP-server. Konfigurationen tillåter
+    e-post från lokala nätverket samt nekar icke-autentiserade användare. Försök att leverera e-post till obehöriga destinationer nekas (\texttt{reject\_unauth\_destination}), vilket säkrar att servern endast accepterar e-post
+    som ska levereras till lokala mottagare. \cite{recipient_restrictions}
+\end{description}
+\newpage
+\section{Reläbegränsning}
+Att begränsa reläfunktionaliteten i en MTA är viktigt för att förhindra missbruk. En felaktig konfigurerad e-postserver som tillåter obegränsad
+relätrafik kan utnyttjas som en så kallad open relay. Detta innebär att obehöriga användare kan skicka stora mängder spam via servern, vilket kan leda
+till att serverns IP-adress svartlistas och att legitima e-postmeddelanden blockeras av andra e-postsystem. 
+Därför är reläbegränsning en grundläggande säkerhetsåtgärd i de flesta e-postinstallationer.\newline
+Det finns dock situationer där strikt reläbegränsning inte är så lämplig. T.ex behöver internetleverantörer tillåta relätrafik från externa nätverk. I dessa fall används istället SASL och TLS för att säkertställa
+att endast behöriga användare kan sända email via servern, även om det inte befinner sig på det lokala nätet. \cite{access_relay}
+
+\section{Verifiering}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{mejl_test_donald.png}
+    \caption{Denna bild visar att jag kan skicka mejl till donald som finns lokalt i samma maskin, med programmet telnet.}
+\end{figure}
+
+\chapter*{DNS}
+\setcounter{chapter}{3}
+\setcounter{figure}{0}
+\setcounter{section}{0}
+\section{Syfte}
+Syftet med DNS-konfigurationen i denna laboration är att möjliggöra korrekt e-postleverans
+till och från domänen mcduckcorp.duckburg.cali. \newline
+DNS används inom e-postsystem för att tala om vilken server som ansvarar för att ta emot e-post 
+för en viss domän, samt för att publicera policy-information som används av mottagande e-postservrar för att avgöra
+om ett meddelande är legitimt eller ska klassas som spam.
+\newline\newline
+För att uppnå detta krävdes följande:
+\begin{itemize}
+    \item Ett MX-record för att peka ut vilken mailserver som hanterar e-post för domänen.
+    \item Ett SPF-record för att ange vilka servrar som är tillåtna att skicka e-post för domänen.
+    \item Ett DKIM-record för att möjliggöra kryptografisk signering av utgående e-post och verifiering hos mottagare.
+\end{itemize}
+Dessa mekanismer används tillsammans av moderna e-postsystem för att minska risken för spam, spoofing och förfalskade avsändare.
+
+\section{Konfiguration}
+I zonfilen för mcduckcorp.duckburg.cali lades ett MX-record till som pekar på mailservern mail.mcduckcorp.cali. Detta gör att e-post adresserad
+till användare inom domänen kan levereras rätt server.
+\newline
+För att minska risken att e-post från domänen klassas som spam konfigurerade även.
+\begin{itemize}
+    \item SPF, som specificerar att endast mailserver med korrekt IP-adress får skicka e-post för domänen.
+    \item DKIM, utgående e-post signeras kryptografiskt av servern med hjälp av openDKIM. 
+\end{itemize}
+OpenDKIM konfigurerades att kommunicera med Postfix via en lokal UNIX-socket, vilket är nödvändigt för att lösningen fungera 
+i en container-miljö, enligt labbens instruktioner.
+\section{Verifiering}
+För att verifiera DNS- och DKIM-konfigurationen skickades ett e-postmeddelande med Telnet från en lokal användare till en annan lokal 
+användare inom domänen mcduckcorp.duckburg.cali.
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{sending_email_with_dkim.png}
+    \caption{Denna bild visar att jag har skickat ett mejl med Telnet från mig själv till mickey.}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{dkim_signed.png}
+    \caption{Denna bild visar att mejlet har blivit signerat med DKIM}
+\end{figure}
+\newpage
+
+\chapter*{Access Agents}
+\setcounter{chapter}{4}
+\setcounter{figure}{0}
+\setcounter{section}{0}
+Agenten installerades ned med hjälp av laborationens referens (Dovecot 2024a). 
+\section{Syfte}
+Syftet med denna del är att konfigurera en AA som gör det möjligt för användare att läsa sina e-mails 
+från en annan dator. Agenten använder protokollen POP3 och IMAP för att ge klienter åtkomst till mailboxar
+som lagras lokalt på servern. Dovecot används som AA och Maildir som lagringsformat. 
+\section{Konfigurering}
+Dovecot installerades och konfigurerades som Access Agent för att ge användare åtkomst till 
+lokalt lagrade e-mails via IMAP och POP3. Konfigurationen baserades på Dovecots standardinställningar 
+och justerades endast i de delar som krävdes för att uppfylla labbens krav.
+\newline\newline
+Följande ändringar gjordes i Dovecots konfigurationsfiler:
+\begin{itemize}
+    \item /etc/dovecot/conf.d/10-mail.conf\newline
+    \textbf{mail-location = maildir:~/Maildir}\newline
+    Detta för att Dovecot ska ta hänsyn till att jag använder Maildir som 
+    e-post lagringsformat. Jag talar om för Dovecot explicit att använda Maildir, där MDA (Postfix) placerar e-posts.
+    \item /etc/dovecot/conf.d/10-ssl.conf\newline
+    \textbf{ssl = required}\newline
+    Denna inställning tvingar Dovecot att använda TLS för alla anslutningar.
+    Syftet är att säkerställa att all autentisering och kommunikation mellan 
+    klient och AA är krypterad, vilket uppfyller labbens krav på säker e-mailåtkomst.\newline
+    \begin{verbatim}
+        ssl_cert = </etc/ssl/certs/ssl-cert-snakeoil.pem
+        ssl_key = </etc/ssl/private/ssl-cert-snakeoil.key
+    \end{verbatim}
+    Dessa certifikat används för att möjliggöra TLS-kryptering av anslutningar till Dovecot.
+    \item /etc/dovecot/conf.d/10-auth.conf\newline
+    \textbf{auth\_mechanisms = plain login} \newline
+    \textbf{disable\_plaintext\_auth = yes} \newline
+    Dessa inställningar anger vilka autentiseringsmekanismer som tillåts samt
+    förhindrar att autentisering sker i klartext. Syftet är att tvinga användning
+    av krypterade TLS-anslutningar vid inloggning, vilket skyddar användarnamn
+    och lösenord från att visas på nätet.
+    
+\end{itemize}
+\section{Verifiering}
+Funktionaliteten verifierades genom att ansluta till Dovecot med telnet. En anslutning till 
+IMAP-porten (143) och POP3-porten(110) gav korrekt svart från servern, vilket bekräftar att tjänsterna körs och accepterar anslutning. 
+\newline
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{pop3.png}
+    \caption{Denna bild visar en lyckad anslutning till POP3-tjänsten.}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{imap.png}
+    \caption{Denna bild visar en lyckad anslutning till IMAP-tjänsten.}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{fetch_mail_mickey.png}
+    \caption{Här skrivs ut det meddelandet som skickades för att verifiera DKIM signatur(lagrad i mickeys Maildir).}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{openssl.png}
+    \caption{Denna bild verifierar att TLS-handshake lyckades, certifikat accepterades och att anslutningen är krypterad.}
+\end{figure}
+\newpage
+\printbibliography[title={Referenser}]
+\end{document}

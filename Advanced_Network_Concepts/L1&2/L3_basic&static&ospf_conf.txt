@@ -1,0 +1,128 @@
+Current configuration : 1391 bytes
+!
+! Last configuration change at 14:56:01 UTC Fri Nov 21 2025
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname RTb
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+dot11 syslog
+ip source-route
+!
+!
+ip cef
+!
+!
+!
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+voice-card 0
+!
+crypto pki token default removal timeout 0
+!
+!
+!
+!
+license udi pid CISCO2811 sn FCZ144670K4
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ bandwidth 100000
+ ip address 20.17.32.1 255.255.252.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ bandwidth 64000
+ ip address 20.17.29.169 255.255.255.252
+ clock rate 64000
+!
+interface Serial0/0/1
+ bandwidth 128000
+ ip address 20.17.29.166 255.255.255.252
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+ clock rate 125000
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+ clock rate 125000
+!
+router ospf 1
+ network 20.17.29.164 0.0.0.3 area 0
+ network 20.17.32.0 0.0.3.255 area 0
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 20.17.29.165
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+mgcp profile default
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input all
+!
+scheduler allocate 20000 1000
+end

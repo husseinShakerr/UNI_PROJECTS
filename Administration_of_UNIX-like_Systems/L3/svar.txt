@@ -1,0 +1,12 @@
+
+https://www.ibm.com/docs/en/aix/7.1.0?topic=commands
+
+https://documentation.ubuntu.com/_/downloads/server/en/latest/pdf/
+
+https://man7.org/linux/man-pages/man1/
+https://man7.org/linux/man-pages/man2/
+
+File types and links
+https://www.geeksforgeeks.org/linux-unix/linux-directory-structure/
+
+https://discourse.ubuntu.com/t/basic-backup-shell-script/36419

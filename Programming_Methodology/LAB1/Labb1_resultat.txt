@@ -1,0 +1,11 @@
+Antal element: 400000 
+tid (s): 0.229
+Sortering: Rekursiv
+
+Antal element: 40000 
+tid (s): 197.818
+Sortering: Selektiv
+
+Antal element: 400000 
+tid (s): 0.048
+Sortering: std::sort

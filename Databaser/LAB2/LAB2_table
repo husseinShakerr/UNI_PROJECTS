@@ -1,0 +1,21 @@
+//Entities
+
+Customer(customer_id(PK), name, type_of_customer, street, city, state, zip, fax_nr, phone_nr)
+
+Employees(employee_id(PK), first_name, last_name, hire_date, address, city, state, zip, home_phone)
+
+Educational_degrees(degree_id(PK), degree_name)
+
+Employee_degrees((em_id(FK), deg_id(FK)(PK))
+
+Pets(pet_id(PK), pet_name, type_of_animal, breed, birth_date, gender)
+
+
+//Relations
+
+
+Service(service_id(PK), description)
+
+Has(c_id(FK), p_id(FK)(PK))
+
+Resquest(request_id(PK), c_id(FK), p_id(FK), e_id(FK), s_id(FK), visit_date, description, price)

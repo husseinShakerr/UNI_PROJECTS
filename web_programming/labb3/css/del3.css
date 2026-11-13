@@ -1,0 +1,19 @@
+#title{
+    background-color: black;
+    color: white;
+    text-align: center;
+    border: 2px red solid;
+    border-radius: 5px;
+    padding: 20px;
+}
+#info{
+    background-color: black;
+    border: 2px red solid;
+    border-radius: 5px;
+    padding: 20px;
+
+}
+#infoParagraph{
+    color: white;
+    text-align: center;
+}

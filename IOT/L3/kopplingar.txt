@@ -1,0 +1,10 @@
+Arduino
+
+TX -> 220resistor -> PIN 1(OPT)
+GND -> PIN 2(OPT)
+
+RaspberryPI
+
+3.3V -> PIN 5 (OPT)
+GND -> 10kΩResistor -> PIN 4(OPT)
+PIN 4 -> RX

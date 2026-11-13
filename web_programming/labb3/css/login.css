@@ -1,0 +1,40 @@
+#logInBox {
+    border: 2px solid red;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    padding: 20px;
+
+    width: 500px;
+    max-width: 90%;
+    height: 400px;
+    margin: 50px auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#logInBtn {
+    width: 100%;
+    padding-top: 20px;
+    background-color: black;
+    color: white;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+#logInBtn:hover {
+    color: red;
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff3333;
+    background-color: black;
+}
+#logInBox label,
+#logInBox input {
+    width: 100%;
+    margin-bottom: 15px;
+    display: block;
+    box-sizing: border-box;
+}

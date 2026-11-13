@@ -1,0 +1,8 @@
+#!/bin/bash
+BACKUP="$HOME"
+DEST="/dump/home_backup"
+TIMESTAMP="$(date +'%d_%m_%Y_%H_%M_%S')"
+HOSTNAME = $(hostname -s)
+archive_file="$HOSTNAME-$TIMESTAMP.tgz"
+tar czf $DEST/$archive_file $BACKUP
+echo "BACKUP KLAR: $DEST/$archive_file"

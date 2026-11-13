@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <mosquitto.h>
+#include <string.h>
+#define BROKER_ADDRESS "192.168.1.9"
+#define BROKER_PORT 1883
+#define CLIENT_ID "mqtt_led_publisher"
+#define TOPIC "topic/led"
+
+//Återanrops funktion som hanterar händelser
+void on_connect(mosquitto *mosq, void *obj, int rc) {
+    if (rc == MOSQ_ERR_SUCCESS) {
+        std::cout<<"Ansluten till broker"<<std::endl;
+    } else {
+        std::cerr<<"Misslyckade att koppla till broker"<<std::endl;
+        exit(1);
+    }
+}
+
+
+int main() {
+    int rc;
+    std::string message;
+
+    //Initialisera mosquitto bibliotek
+    mosquitto_lib_init();
+
+    //Skapa mosquitto Klient
+    mosquitto *mosq = mosquitto_new(CLIENT_ID, true, NULL);
+    if (!mosq) {
+        std::cerr<<"Error: Kunde inte skapa klient"<<std::endl;
+        mosquitto_lib_cleanup();
+        return 1;
+    }
+
+    mosquitto_connect_callback_set(mosq, on_connect);
+
+    //Anslut till broker
+    rc = mosquitto_connect(mosq, BROKER_ADDRESS, BROKER_PORT, 60);
+    if (rc != MOSQ_ERR_SUCCESS) {
+        std::cerr<<"Error: Kunde inte ansluta till broker"<<std::endl;
+        mosquitto_destroy(mosq);
+        mosquitto_lib_cleanup();
+        return 1;
+    }
+
+    //Loop för mosquittos uppsättning
+    mosquitto_loop_start(mosq);
+
+    while (1) {
+        std::cout<<"Mata in '1' för påslagning, eller '0' för avslagning"<<std::endl;
+        std::cin>>message;
+        if (message == "1" || message == "0") {
+            rc = mosquitto_publish(mosq, NULL, TOPIC, message.length(), message.c_str(), 0, false);
+            if (rc != MOSQ_ERR_SUCCESS) {
+                std::cerr<<"Error: Kunde inte publicera meddelande "<<std::endl;
+            } else {
+                std::cout<<"Publicerat meddelande: "<< message << std::endl;
+            }
+        } else {
+            std::cout<<"Ogilti inmatning. Mata in '1' eller '0'"<<std::endl;
+        }
+    }
+
+    //Rensa mosquitto uppkoppling
+    mosquitto_loop_stop(mosq, true);
+    mosquitto_disconnect(mosq);
+    mosquitto_destroy(mosq);
+    mosquitto_lib_cleanup();
+
+    return 0;
+}

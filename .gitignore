@@ -1,0 +1,11 @@
+*.exe
+*.o
+*.class
+build/
+out/
+bin/
+cmake-build-*/
+.idea/
+.vscode/
+node_modules/
+__pycache__/

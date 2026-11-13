@@ -1,0 +1,91 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{ULSAH}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=13aafe035938a180fbbdea1455b0155c}{%
+           family={Nemeth},
+           familyi={N\bibinitperiod},
+           given={Evi},
+           giveni={E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Addison-Wesley}%
+      }
+      \strng{namehash}{13aafe035938a180fbbdea1455b0155c}
+      \strng{fullhash}{13aafe035938a180fbbdea1455b0155c}
+      \strng{fullhashraw}{13aafe035938a180fbbdea1455b0155c}
+      \strng{bibnamehash}{13aafe035938a180fbbdea1455b0155c}
+      \strng{authorbibnamehash}{13aafe035938a180fbbdea1455b0155c}
+      \strng{authornamehash}{13aafe035938a180fbbdea1455b0155c}
+      \strng{authorfullhash}{13aafe035938a180fbbdea1455b0155c}
+      \strng{authorfullhashraw}{13aafe035938a180fbbdea1455b0155c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Unix and Linux System Administration Handbook}
+      \field{year}{2017}
+    \endentry
+    \entry{pf_std_conf}{online}{}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \verb{urlraw}
+      \verb https://www.postfix.org/STANDARD_CONFIGURATION_README.html
+      \endverb
+      \verb{url}
+      \verb https://www.postfix.org/STANDARD_CONFIGURATION_README.html
+      \endverb
+    \endentry
+    \entry{relay_restrictions}{online}{}{}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \verb{urlraw}
+      \verb https://www.postfix.org/postconf.5.html#smtpd_relay_restrictions
+      \endverb
+      \verb{url}
+      \verb https://www.postfix.org/postconf.5.html#smtpd_relay_restrictions
+      \endverb
+    \endentry
+    \entry{recipient_restrictions}{online}{}{}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \verb{urlraw}
+      \verb https://www.postfix.org/postconf.5.html#smtpd_recipient_restrictions
+      \endverb
+      \verb{url}
+      \verb https://www.postfix.org/postconf.5.html#smtpd_recipient_restrictions
+      \endverb
+    \endentry
+    \entry{access_relay}{online}{}{}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \verb{urlraw}
+      \verb https://www.postfix.org/SMTPD_ACCESS_README.html#relay
+      \endverb
+      \verb{url}
+      \verb https://www.postfix.org/SMTPD_ACCESS_README.html#relay
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

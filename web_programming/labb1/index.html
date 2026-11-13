@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="utf-8">
+    <title>Beställ visitkort</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+            margin: 50px;
+            font-family: Arabic Typesetting, sans-serif;
+            background-color: #626262;
+        }
+
+        #visitCardForm, #visitCardPrev {
+            width: 400px;
+            padding: 25px;
+            border: 2px solid #BABABA;
+            border-radius: 20px;
+            background-color: grey;
+            box-shadow: 10px 10px 10px #BABABA;
+        }
+
+        #visitCardForm h1, #visitCardPrev h1 {
+            text-align: center;
+        }
+
+        label, input, select {
+            display: block;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        input, select {
+            padding: 5px;
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            border-radius: 5px;
+        }
+
+        #button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.2);
+            cursor: pointer;
+            box-shadow: 0 10px 20px #BABABA;
+        }
+
+        #submitButton {
+            background-color: #00ff00;
+            color: black;
+            border-radius: 5px;
+        }
+
+        #resetButton {
+            background-color: #ff0000;
+            border-radius: 5px;
+        }
+
+        #backButton {
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+
+        #card {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .visitCard {
+            width: 300px;
+            height: 300px;
+            border: 2px solid black;
+            border-radius: 20px;
+            padding: 5px;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<form id="visitCardForm">
+    <h1>Beställ ditt visitkort</h1>
+
+    <label for="company">Företag:</label>
+    <input type="text" id="company" required>
+
+    <label for="name">Namn:</label>
+    <input type="text" id="name" required>
+
+    <label for="title">Titel:</label>
+    <input type="text" id="title" required>
+
+    <label for="telephone">Telefon:</label>
+    <input type="tel" id="telephone" required>
+
+    <label for="email">E-post:</label>
+    <input type="email" id="email" required>
+
+    <label for="BGC">Bakgrundsfärg:</label>
+    <select id="BGC" required>
+        <option value="" disabled selected>Välj färg</option>
+        <option value="lightyellow">Ljusgul</option>
+        <option value="lightblue">Ljusblå</option>
+        <option value="white">Vit</option>
+        <option value="turquoise">Turkos</option>
+    </select>
+
+    <label for="textColor">Textfärg:</label>
+    <select id="textColor" required>
+        <option value="" disabled selected>Välj färg</option>
+        <option value="black">Svart</option>
+        <option value="blue">Blå</option>
+        <option value="red">Röd</option>
+        <option value="darkgreen">Mörkgrön</option>
+    </select>
+
+    <label for="type">Typsnitt:</label>
+    <select id="type" required>
+        <option value="" disabled selected>Välj typsnitt</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Arial">Arial</option>
+        <option value="Tahoma">Tahoma</option>
+        <option value="Impact">Impact</option>
+    </select>
+
+    <div id="buttons">
+        <button id="submitButton">Beställ</button>
+        <button id="resetButton">Nollställ</button>
+    </div>
+</form>
+
+
+<div id="visitCardPrev" style="display:none;">
+    <h1>Ditt visitkort</h1>
+    <div id="card"></div>
+    <button id="backButton">Tillbaka</button>
+</div>
+</body>
+<script src="script.js"></script>
+
+</html>

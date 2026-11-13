@@ -1,0 +1,94 @@
+#include <iostream>
+#include <cstring>
+#include <unistd.h>
+#include <mosquitto.h>
+#include <wiringPi.h>
+
+#define BROKER_ADDRESS "localhost"  // Mosquitto broker address
+#define BROKER_PORT 1883            // Mosquitto standard port
+#define CLIENT_ID "mqtt_led_client" // Klient_id för MQTT mottagare
+#define TOPIC "topic/led"         // Topic för att prenumerera
+
+#define LED_PIN 0 // Definierar pin nummmer (11 på raspberry)
+
+// Meddelande funktion som hanterar inkommande meddelanden till raspberry
+void message_callback(mosquitto* mosq, void *obj, const mosquitto_message *message) {
+    std::cout<<"Mottaget meddelande på topic: "<<message->topic<< ": "<<(char *)message->payload<<std::endl;
+    std::string payload = std::string((char*)message->payload, message->payloadlen);
+    // Kontroll över inkommande val
+    if (payload == "1") {
+        digitalWrite(LED_PIN, HIGH);
+        std::cout << "LED påslagen" << std::endl;
+    } else if (payload == "0") {
+        digitalWrite(LED_PIN, LOW);
+        std::cout << "LED avslagen" << std::endl;
+    }
+}
+int main() {
+    int rc;
+
+    //Initialiserar WiringPi biblioteket
+    if (wiringPiSetup() == -1) {
+        std::cerr<<"Kunde inte initialisera wiringPi"<<std::endl;
+        return 1;
+    }
+
+    //Sätt LED_PIN till en output
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, LOW);  // Initialisera led till OFF
+
+    //Initialisera mosquitto biblioteket
+    mosquitto_lib_init();
+
+    //Skapa en mosqoitto klient
+    mosquitto* mosq = mosquitto_new(CLIENT_ID, true, NULL);
+    if (!mosq) {
+        std::cerr<<"Error: Kunde inte skapa mosquitto klient"<<std::endl;
+        mosquitto_lib_cleanup();
+        return 1;
+    }
+    //Sätt anropsmeddelandet funktionen
+    mosquitto_message_callback_set(mosq, message_callback);
+
+    //Koppla till server
+    rc = mosquitto_connect(mosq, BROKER_ADDRESS, BROKER_PORT, 60);
+    if (rc != MOSQ_ERR_SUCCESS) {
+        std::cerr<<"Error: Kunde inte koppla till broker"<<std::endl;
+        mosquitto_destroy(mosq);
+        mosquitto_lib_cleanup();
+        return 1;
+    }
+
+    //Prenumerera på topic: "led"
+    rc = mosquitto_subscribe(mosq, NULL, TOPIC, 0);
+    if (rc != MOSQ_ERR_SUCCESS) {
+        std::cerr<<"Error: Kunde inte prenumerera på topic"<<std::endl;
+        mosquitto_destroy(mosq);
+        mosquitto_lib_cleanup();
+        return 1;
+    }
+
+    //Loopa för inkommade meddelanden
+    rc = mosquitto_loop_start(mosq);
+    if (rc != MOSQ_ERR_SUCCESS) {
+        std::cerr<<"Error: Kunde inte starta loop"<<std::endl;
+        mosquitto_destroy(mosq);
+        mosquitto_lib_cleanup();
+        return 1;
+    }
+
+    //Denna loop körs tills en avslutande interaktion sker
+    std::cout<<"Tryck Ctrl+C för att stänga ner program."<<std::endl;
+    while (1) {
+        usleep(1);
+    }
+
+    //Rensa mosquitto
+    mosquitto_loop_stop(mosq, true);
+    mosquitto_disconnect(mosq);
+    mosquitto_destroy(mosq);
+    mosquitto_lib_cleanup();
+
+    return 0;
+}
+

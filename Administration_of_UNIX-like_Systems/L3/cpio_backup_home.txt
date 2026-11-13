@@ -1,0 +1,8 @@
+#!/bin/bash
+DEST="/dump/home_backup"
+TIMESTAMP="$(date +'%d_%m_%Y_%H_%M_%S')"
+HOSTNAME=$(hostname -s)
+ARCHIVE_FILE="$HOSTNAME-$TIMESTAMP.tgz"
+cd "$HOME"
+find . -print | cpio -o -H newc | gzip > "$DEST/$ARCHIVE_FILE"
+echo "BACKUP KLAR: $DEST/ARCHIVE_FILE"

@@ -1,0 +1,141 @@
+DEL1
+Write down the priority and nice value of the process,
+ps aux|grep iloop
+PID 1043
+PRIO 20
+NI 0
+
+restart the script with a lower priority, check what priority and nice value
+the process have now.
+efter sänkning av prio [nice -n 10 infiniteloop.sh]
+PID 1134
+PR 30
+NI 10
+
+now increase the scripts priority without restarting it:
+– without using sudo, how highly will you be able to prioritize the
+process?
+SVAR
+Niceness kan inte sänkas utan sudo.
+
+
+with sudo, how highly will you be able to prioritize the process?
+SVAR
+man kan som lägst sänka niceness till -20, alltså prio 0.
+
+
+• now stop your script using kill (1) and pkill (1)
+• start the script with the nohup (1) command after which you close the
+terminal. Using another terminal check to see if the script is still running.
+Processen var fortfarande igång även efter nedstängning av terminalen
+
+./infiniteloop.sh &
+Bör stoppas ned om man stänger ned förälderterminalen, då förälderterminalen skickar SIGHUP till alla sina barnprocesser.
+
+nohup ./infiniteloop.sh &
+Bör inte stängas ned, SIGHUP ignoreras. processer startade med NOHUP ska explicit ignorera SIGHUP signalen från förälderprocessen.
+(Men eftersom jag kör på Ubuntu server så stängdes ingen av dem ned).
+
+ Once more rerun the script and suspend it using <CTRL>-Z. Now with the
+help of the commands jobs (1), bg (1) and fg (1), start the script in
+the foreground, then once again suspend the process and start the script
+in the background.
+
+
+bg %[jobnr]
+Fortsätter exekvera koden i bakgrunden
+
+fg %[jobnr]
+Fortsätter exekvera koden i förgrunden
+
+
+
+DEL2
+EZ
+
+DEL3
+1.vmstat visar
+
+PROCESSES:
+r - antalet processer som körs eller väntar på CPU
+b - blockerade processer som väntar på I/O (t.ex disk eller nätverk), dessa processer använder inte CPU, men väntar på resurser.
+
+MEMORY:
+swpd - antalet kB som används i swap (virtuellt minne på disk). Om detta är > 0 betyder det att systemet har bytt ut minne från RAM till disk.
+free - Antalet kB ledig RAM. 
+buff - Minnet som används för buffer (tillfälligt lagringsminne för blockenheter, t.ex disk).
+cache - Minnet som används för filcache. Linux håller ofta filer i minnet för snabb åtkomst, även om de tekniskt sett kan frigöras vid behov.
+
+SWAP:
+Swap används när RAM är fullt
+si/swap in - Antalet kB som lästs från swap tillbaka till RAM/sek, om > 0 betyder det att systemet måste läsa minne från disken.
+so/swap out - Antalet kB som skriv från RAM till swap/sek, om > 0 betyder det att systemet har för lite RAM och flyttar minne till disk
+
+IO:
+bi/blocks in - Antal block som lästs från blockenheter/sek. (Högt värde = mycket läsning från disk)
+bo/blocks out - Antal blocks som skrivits till blockenheter/sek. (Hög värde = mycket skrivning till disk).
+
+
+SYSTEM
+in - Antal interrupts per sekund
+cs - Antal context switches per sekund
+
+CPU:
+us - % CPU-tid som använts av användarprocesser
+sy - % CPU-tid som använts av kärnprocesser
+id - % IDLE, alltså CPU-tid som tid som är ledig
+wa - % WAIT CPU-tid som väntar på I/O
+st - %STEAL CPU-tid stulen av hypervisor i virtualiserad miljö
+
+2.top visar: 
+PID - processens unika ID
+USER - Användaren som startade processen.
+PR - Prioritetsnivå
+NI - Snällhetsgrad
+VIRT - virtuellt minne, allt minne processen kan använda, inkl delat, swap, reserverat.
+RES - Faktiskt minne i RAM just nu
+SHR - Delat minne med andra processer. 
+S - Processens tillstånd
+%CPU - hur mycket CPU tid processen använder
+%MEM - hur mycket minne processen använder
+time+ - Visar hur mycket CPU tid processen har förbrukat sedan start av system.
+COMMAND - Namnet på processen. 
+
+3. 
+konfigurerat minne - 3.8GiB
+swap minne - 4.0GiB
+
+konfigurerat minne som använts: 474MiB
+swap minne som anänts: 0B 
+
+4.
+Kommandot [last] hämtar data från /var/log/wtmp. På denna VM innehåller wtmp endast poster av typen reboot, alltså systemstarter. Det finns inga registrerade användarinloggar från vanliga användare att redovisa. 
+
+5. Kommandot w visar "hussein" är inloggad. 
+
+6. Den huvudsakliga tanken med kommandot uptime är att visa hur länge systemet har varit igång. Visar också nuvarande tiden, antalet användare som är online och load average. Load average är medelvärdet på antalet processer som körs under 1-, 5- och 15 minuters intervaller. 
+
+
+DEL 4
+
+Alla operativsystem har ett eget set av diagonistiska filer för att spåra aktivitet och errors. De mest användbara metoderna när det gäller rapporter och eventloggar i linux är /var/log/messages* filerna eller /usr/dmesg kommandot.
+Om ett program avslutas onormalt, till exempel pga otillåten minnesåtkomst(SIGSEGV), en ogiltig instruktion, buss-error osv... skapar systemet en core-fil. Denna fil innehåller en minnesdump av processen vid det ögonblick då processen krachade. Syftet med core-filen är att ge utvecklare möjlighet att felsöka problemet i efterhand, eftersom den bevarar programmets minnesinnehåll, stack och registervärden vid krachen. 
+
+1.
+Det kommandot kan ibland också kallas för "driver message" , visar meddelanden dirket från linux-kärnan. Det är framför allt info från drivrutiner och systemstarten. Hårdvara som hittas, moduler som laddas, och dmesg låter utvecklare läsa dem i efterhand.
+
+
+
+2.
+Hittade rsyslog* filerna i 
+/etc
+
+Syslog är en dagbo där tjänster, program och delar av operativsysstemet skriver sina loggar. Det är textfiler under /var/log och där hittar man allt från nätverksproblem till autentisering, pakethantering och egna meddelanden man skickar med logger. Syslog fångar alltså systemets allmänna aktivitet.
+Syslog visar information från hela systemet, kernel, system, applikationer osv. 
+
+dmesg visar det som själva kärnan skriver om hårdvara och drivrutiner. Detn är kernel ring buffer: när systemet startar, när en usb-enhet kopplas in, när ett nätverkskort beter sig underligt. Det är rått och närmare maskinens hårda metall. dmesg används då främst för att felsöka uppstart och hårdvarufel. 
+dmesg visar kernel buffer, endast kernel och drivrutinsmeddelanden.
+
+https://www.ibm.com/docs/en/db2/12.1.x?topic=tools-about-platform-specific-error-logs
+
+https://www.geeksforgeeks.org/linux-unix/dmesg-command-linux-driver-messages/

@@ -1,0 +1,4 @@
+Ange 2 heltal: 
+10 + 100 blir 110
+10 · 100 blir 1000
+

@@ -1,0 +1,108 @@
+\documentclass{report}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[backend=biber, style=ieee]{biblatex}
+\addbibresource{C:/Users/zhass/Desktop/Kurser/unix/references.bib}
+\title{Laboration 6 - Containerteknik}
+\author{Hussein Alshaikhshaker}
+\date{8 Jan 2026}
+\begin{document}
+\maketitle
+\newpage
+\chapter*{Förberedning av host system}
+\setcounter{chapter}{1}
+\setcounter{section}{0}
+\setcounter{figure}{0}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{tree.png}
+    \caption{Min trädstruktur över /var/docker/email}
+\end{figure}
+Denna filstruktur är bygg efter laborationens instruktioner. I tidigare labbar har jag använt 
+Maildir för användare, notera att i denna laboratiopn har jag konfigurerat om postfix till att 
+hantera default mailfiler där endast en fil per användare lagrar eposts. \cite{ULSAH}
+\begin{itemize}
+    \item \textbf{/var/docker/email/etc/default/opendkim} \newline
+    Standardinställningar för OpenDKIM-tjänsten, används av init-system för att starta daemon med rätt parametrar.
+    \item \textbf{/var/docker/email/etc/dkimkeys} \newline
+    Avsedd för DKIM-nyckelhantering enligt labbinstruktioner, används för att länka in eller lagra nyckelmaterial.
+    \item \textbf{/var/docker/email/etc/mail} \newline
+    Innehåller mailrelaterade konfigurationsfiler, exempelvis \texttt{opendkim.m4}, som används vid generering av mailtjänstens inställningar.
+    \item \textbf{/var/docker/email/etc/mailname} \newline
+    Domännamn för mail(innehåller mcduckcorp.duckburg.cali).
+    \item \textbf{/var/docker/email/etc/opendkim} \newline
+    Katalog för OpenDKIM-relaterade filer, inkl. underkatalogen \texttt{keys} där domännycklar lagras.
+    \item \textbf{/var/docker/email/etc/opendkim.conf} \newline
+    Main konfigurationsfil för OpenDKIM.
+    \item \textbf{/var/docker/email/etc/postfix} \newline
+    Huvudkonfiguration för Postfix.
+    \item \textbf{/var/docker/email/etc/postfix-policyd-spf-pyhton} \newline
+    SPF-policy daemon som används av Postfix för att verifiera att inkommande e-post kommer från tillåtna mailservrar.
+    \item \textbf{/var/docker/email/var/mail} \newline
+    Mailfiler för användare.
+    \item \textbf{/var/docker/email/etc/ssl} \newline
+    Innehåller SSL-certifikat och privata nycklar som används för krypterad kommunikation via SMTP.
+    \item \textbf{/var/docker/email/etc/passw $\rightarrow$ /etc/passwd} \newline
+    Symbolisk länk till hostens passwd, nödvändig för rätt UID/GID i containern.
+    \item \textbf{/var/docker/email/etc/group $\rightarrow$ /etc/group} \newline
+    Symbolisk länk till hostens grupp.
+\end{itemize}
+\newpage
+\chapter*{Konfiguration}
+\setcounter{chapter}{2}
+\setcounter{section}{0}
+\setcounter{figure}{0}
+\section{Launch skript}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{launch_email_services_script.png}
+    \caption{Mitt epost-services launch skript.}
+\end{figure}
+\section{Dockerfile}
+Docker-imagen skapades genom att först skriva en dockerfil som använder ubuntu:24.04 som basimage. Ubuntu valdes som basimage eftersom distributionen används i 
+tidigare laborationer och erbjuder stabila, väldokumenterade paket för Postfix och OpenDKIM. 
+Launch skriptet kopierades in i imagen och gjordes körbart, 
+sedan installerades Postfix, OpenDKIM och SPF-verktyg med apt-get. Slutligen angavs launch skriptet som CMD, så att tjänsterna startar automatiskt när containern bootas. 
+\newline\newline
+Under byggprocessen uppstod små problem med DNS och filrättigheter för Postfix/OpenDKIM, vilka löstes genom att temporärt använda hostens DNS och säkerställa att filerna hade rätt ägare och behörigheter.
+\newline
+Processen för docker-image bygger på docker-dokumentationen. \cite{docker_build}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{dockerfile.png}
+    \caption{Dockerfile}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{docker_image.png}
+    \caption{Custom Docker image byggd för email-container listas i denna bild}
+\end{figure}
+
+\section{Container - run skript}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{run_script.png}
+    \caption{Docker-container run-skript}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{network1.png}
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{network2.png}
+    \caption{Detta är mitt dt149g-nätverk}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{docker_ps.png}
+    \caption{Detta är mina containrar}
+\end{figure}
+\newpage
+\section{Verifiering}
+För att säkerställa att containern fungerar skickade jag ett mejl från hussein@mcduckcorp.duckburg.cali till mickey@mcduckcorp.duckburg.cali med swaks. 
+Som visas på bilden nedan mottogs mailet korrekt, med:
+\begin{itemize}
+    \item \textbf{SPF-Pass} \newline Verifierar att avsändarens IP är auktoriserad att skicka mail för domänen.
+    \item \textbf{DKIM-signatur} \newline Bekräftar att meddelandet signerades med privat nyckel och kan verifieras mot domänens publika nyckel.
+\end{itemize}
+Detta bekräftar att både Postfix, OpenDKIM och SPF fungerar korrekt i den byggda docker-imagen.
+\begin{figure}[H]
+    \includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio]{last_img.png}
+    \caption{Detta är en utskrift av mickeys mail-fil.}
+\end{figure}
+\newpage
+\printbibliography[title={Referenser}]
+
+\end{document}

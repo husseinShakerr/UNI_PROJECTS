@@ -1,0 +1,19 @@
+//Entities
+
+Customer(customer_id(PK), name, type_of_customer, street, city, state, zip, fax_nr, phoner_nr)
+
+Pets(pet_id(PK), pet_name, type_of_animal, breed, birth_date, gender, Customer_id(FK))
+
+Service(service_id(PK), description, price)
+
+Employees(employee_id(PK), first_name, last_name, hire_date, address, city, state, zip, home_phone, education)
+
+Visit(Visit_id(PK), Date, Notes, pet_id(FK), employee_id(FK))
+
+Treatment((Visit_id(FK) , service_id(FK))(PK)), price, notes)
+
+
+//Relations
+
+provides((employee_id(FK), service_id(FK)(PK)))
+

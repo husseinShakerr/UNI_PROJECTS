@@ -1,0 +1,105 @@
+body{
+    background-color: rgba(83, 83, 83, 0.47);
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.sidePanel{
+    height: 65%;
+    width: 0;
+    position: fixed;
+    z-index: 1100;
+    top: 70px;
+    left: 10px;
+    background-image: linear-gradient(to right, #757575FF, #2E2E2EFF);
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 20px;
+    border-radius: 5px;
+}
+
+.sidePanel a{
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #ffffff;
+    display: grid;
+    transition: 0.2s;
+}
+.sidePanel a:hover{
+    color: #2E2E2E;
+    text-shadow: 0 0 10px #2E2E2E, 0 0 20px #2E2E2E;
+    transition: 0.3s;
+}
+.sidePanelBtn{
+    position: fixed;
+    background: #757575;
+    color: white;
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1101;
+}
+
+
+.sidePanelBtn:hover{
+    background-color: #757575;
+    color: #2E2E2E;
+    text-shadow: 0 0 10px #2E2E2E, 0 0 20px #2E2E2E;
+    text-transform: uppercase;
+    border-radius: 5px;
+    border:2px solid #1b1b1b;
+}
+
+#headerHeader{
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%);
+    z-index:1200;
+}
+
+.formBox{
+    background-color: #757575FF;
+    padding: 35px;
+    border-radius: 10px;
+    z-index: 100;
+    text-align: center;
+
+}
+.formInput{
+    border-radius: 5px;
+    display: block;
+    padding: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+.submitBtn{
+    cursor: pointer;
+    background-color: #757575FF;
+    border: none;
+    font-size: 20px;
+    position: relative;
+    margin-top: 15px;
+    width: 150px;
+    height: 40px;
+}
+.submitBtn:hover{
+    background-color: #2E2E2EFF;
+    text-shadow: 0 0 10px #2E2E2E, 0 0 20px #1b1b1b;
+    text-transform: uppercase;
+    color: #ffff;
+    border-radius: 15px;
+    border:2px solid #1b1b1b;
+
+}
